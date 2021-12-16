@@ -1,0 +1,1 @@
+from project.blueprints.cars.main import init_app
