@@ -11,7 +11,13 @@ class CarsRepository:
         cars: List[CarModel] = self.session.query(CarModel).all()
         return [car.to_dict() for car in cars]
 
-    def create(self, car) -> None: 
-        car = CarModel(plate=car.get('plate', ""))
-        self.session.add(car)
+    def create(self, car: dict) -> None: 
+        assert self.get_by_plate(car.get('plate')) is None, "This Car has been created before."
+
+        car = CarModel(**car)
+        self.session.add(car) 
         self.session.commit()
+
+    def get_by_plate(self, plate: str) -> CarModel:
+        car = self.session.query(CarModel).filter(CarModel.plate == plate).first()
+        return car
